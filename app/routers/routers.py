@@ -1,6 +1,13 @@
-from .Computer.createComputer import create_computador
-from .Computer.listComputer import list_computador
-from .Metrics.createMetrics import create_monitoramento
-from .createDisks import create_disco
+# app/routers.py
+from .Computer.createComputer import router as router_create_computer
+from .Computer.listComputer import router as router_list_computer
+from .Metrics.createMetrics import router as router_create_metrics
+from .Metrics.listMetrics import router as router_list_metrics
 
-routers = [create_monitoramento, create_computador, create_disco, list_computador]
+# Agrupar todas as rotas em uma lista
+routers = [
+    router_create_computer,
+    router_create_metrics,
+    router_list_metrics,
+    router_list_computer
+]

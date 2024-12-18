@@ -1,16 +1,13 @@
 # app/main.py
 from fastapi import FastAPI
 from app.database.database import connect_to_postgresql, create_database, create_tables
-from app.routers import router_create_computer, router_create_metrics,router_create_disco, router_list_computer
+from app.routers.routers import routers  # Importa todas as rotas como um grupo
 
 app = FastAPI()
 
-# Incluindo as rotas no aplicativo FastAPI
-app.include_router(router_create_computer)  # Rota create-computer
-app.include_router(router_create_metrics)  # Rota create-metrics
-app.include_router(router_create_disco)
-app.include_router(router_list_computer)
-
+# Incluindo todas as rotas em um loop
+for router in routers:
+    app.include_router(router)
 
 @app.get("/create-database")
 def create_db():
