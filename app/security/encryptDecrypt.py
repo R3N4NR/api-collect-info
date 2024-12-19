@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet
-import base64
+
 
 # Chave de encriptação (a mesma chave usada para encriptar)
 chave = b"jYIduQWmlAbryYpQGsy3euWfHrqbQAflMQU3Y6yyBKU="  # Substitua por sua chave segura
