@@ -52,7 +52,7 @@ def update_monitoramento(id: uuid.UUID, monitoramento: UpdateMonitoramento):
                 '''UPDATE dados_monitoramento
                    SET hostname = %s, ip_local = %s, id_discos = %s, cpu_info = %s, cpu_percent = %s,
                        memoria_total = %s, memoria_livre = %s, ram_percent = %s, data_coleta = %s
-                   WHERE id = %s''',
+                   WHERE id_computador = %s''',
                 (
                     dados_dict['hostname'],
                     dados_dict['ip_local'],

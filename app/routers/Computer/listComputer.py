@@ -1,49 +1,59 @@
-import uuid
+from typing import List
 from fastapi import APIRouter, HTTPException
-from app.schemas.DadosComputador import ListComputador
 from app.security.encryptDecrypt import desencriptar_dados
 from app.database.database import connect_to_postgresql
+from app.schemas.DadosComputador import ListComputador
+import logging
 
 router = APIRouter()
 
-@router.get("/list-computer", summary="Desencriptar e ler dados de computador", response_model=ListComputador)
-def list_computador(id: uuid.UUID):
+@router.get("/list-computer", summary="Buscar todos os computadores e comparar o MAC", response_model=List[ListComputador])
+def list_computadores(mac: str):
     try:
         # Conectar ao banco de dados
         conn = connect_to_postgresql('monitoramento')
         cursor = conn.cursor()
 
-        # Buscar os dados do computador no banco de dados
+        # Buscar todos os computadores
         cursor.execute(
-            "SELECT id, hostname, mac, data_registro FROM computadores WHERE id = %s",
-            (str(id),)  # Passando o `id` como string
+            "SELECT id, hostname, mac, data_registro FROM computadores"
         )
-        computador = cursor.fetchone()
+        computadores = cursor.fetchall()
 
-        if not computador:
-            raise HTTPException(status_code=404, detail="Computador não encontrado")
+        if not computadores:
+            raise HTTPException(status_code=404, detail="Nenhum computador encontrado")
 
-        # Desempacotar os dados do computador
-        id, hostname, mac, data_registro = computador
+        # Lista para armazenar os computadores encontrados com o MAC correspondente
+        computadores_desencriptados = []
 
-        # Colocar os dados em um dicionário
-        dados_dict = {
-            "id": id,
-            "hostname": str(hostname),
-            "mac": str(mac),
-            "data_registro": str(data_registro)
-        }
+        # Desencriptar e comparar o MAC de cada computador
+        for computador in computadores:
+            id, hostname, mac_banco, data_registro = computador
 
-        # Desencriptar os dados
-        dados_desencriptados = desencriptar_dados(dados_dict)
+            # Desencriptar o MAC
+            mac_desencriptado = desencriptar_dados({"mac": mac_banco})["mac"]
+            
+            if mac_desencriptado == mac:
+                # Colocar os dados desencriptados em um dicionário
+                dados_dict = {
+                    "id": id,
+                    "hostname": str(hostname),
+                    "mac": mac_desencriptado,  # Passando o MAC desencriptado
+                    "data_registro": str(data_registro),
+                }
 
-        # Fechar a conexão com o banco de dados
+                # Adicionar o computador à lista de resultados
+                computadores_desencriptados.append(ListComputador(**dados_dict))
+
         cursor.close()
         conn.close()
 
-        # Retornar os dados desencriptados
-        return ListComputador(**dados_desencriptados)
+        if not computadores_desencriptados:
+            raise HTTPException(status_code=404, detail="Nenhum computador com MAC correspondente encontrado")
+
+        # Retornar os computadores desencriptados que correspondem ao MAC
+        return computadores_desencriptados
 
     except Exception as e:
+        logging.error(f"Erro ao processar os dados: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erro ao processar os dados: {str(e)}")
-

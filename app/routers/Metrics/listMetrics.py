@@ -18,7 +18,7 @@ def list_monitoramento(id: uuid.UUID):
         cursor.execute(
             '''SELECT id, hostname, id_discos, id_computador, ip_local, cpu_info,
             cpu_percent, memoria_total, memoria_livre, ram_percent, data_coleta
-            FROM dados_monitoramento WHERE id = %s''',
+            FROM dados_monitoramento WHERE id_computador = %s''',
             (str(id),)  # Certifique-se de que id está sendo passado corretamente
         )
         monitoramento = cursor.fetchone()

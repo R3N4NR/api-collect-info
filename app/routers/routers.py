@@ -7,7 +7,7 @@ from .Metrics.updateMetrics import router as router_update_metrics
 from .Disks.createDisks import router as router_create_disks
 from .Disks.listDisks import router as router_list_disks
 from .Disks.updateDisks import router as router_update_disks
-
+from .Computer.getComputerByMac import router as router_computer_by_mac
 # Agrupar todas as rotas em uma lista
 routers = [
     router_create_computer,
@@ -17,5 +17,6 @@ routers = [
     router_create_disks,
     router_list_disks,
     router_update_metrics,
-    router_update_disks
+    router_update_disks,
+    router_computer_by_mac
 ]
