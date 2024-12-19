@@ -12,3 +12,5 @@ dotenv
 logging
 pydantic
 Fernet
+
+Não esqueça de configurar a variável de ambiente para utilizar a chave de encriptação.
