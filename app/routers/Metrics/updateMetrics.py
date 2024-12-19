@@ -1,9 +1,9 @@
-import uuid
 from fastapi import APIRouter, HTTPException
 from app.schemas.DadosMonitoramento import UpdateMonitoramento
 from app.security.encryptDecrypt import encriptar_dados, desencriptar_dados
 from app.database.database import connect_to_postgresql
 from datetime import datetime
+import uuid
 
 router = APIRouter()
 
@@ -42,22 +42,28 @@ def update_monitoramento(id: uuid.UUID, monitoramento: UpdateMonitoramento):
                     detail=f"O registro com ID {id} não foi encontrado na tabela monitoramento."
                 )
 
+            # Se 'id_discos' for None, passa como NULL para o banco de dados
+            id_discos = dados_dict.get('id_discos', None)
+            if id_discos == "None":
+                id_discos = None
+
             # Atualiza os dados no banco de dados
             cursor.execute(
                 '''UPDATE dados_monitoramento
-                   SET hostname = %s, ip_local = %s, cpu_info = %s, cpu_percent = %s,
+                   SET hostname = %s, ip_local = %s, id_discos = %s, cpu_info = %s, cpu_percent = %s,
                        memoria_total = %s, memoria_livre = %s, ram_percent = %s, data_coleta = %s
                    WHERE id = %s''',
                 (
-                    dados_dict['hostname'],            
-                    dados_dict['ip_local'],  
+                    dados_dict['hostname'],
+                    dados_dict['ip_local'],
+                    id_discos,  # Passa o valor de id_discos ou NULL se for None
                     dados_dict['cpu_info'],
                     dados_dict['cpu_percent'],
                     dados_dict['memoria_total'],
                     dados_dict['memoria_livre'],
                     dados_dict['ram_percent'],
-                    datetime.now(),          
-                    str(id)                  
+                    datetime.now(),
+                    str(id)
                 )
             )
 
@@ -66,8 +72,9 @@ def update_monitoramento(id: uuid.UUID, monitoramento: UpdateMonitoramento):
 
             return {
                 "id": id,
-                "hostname": dados_dict['hostname'] ,
-                "ip_local": dados_dict['ip_local'] ,
+                "hostname": dados_dict['hostname'],
+                "ip_local": dados_dict['ip_local'],
+                "id_discos": id_discos,
                 "cpu_info": dados_dict['cpu_info'],
                 "cpu_percent": dados_dict['cpu_percent'],
                 "memoria_total": dados_dict['memoria_total'],

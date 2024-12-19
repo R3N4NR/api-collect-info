@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 import uuid
 from pydantic import BaseModel
 
@@ -29,6 +30,7 @@ class ListMonitoramento(BaseModel):
 class UpdateMonitoramento(BaseModel):
     hostname: str
     ip_local: str
+    id_discos: Optional[uuid.UUID] 
     cpu_info: str
     cpu_percent: float
     memoria_total: float
