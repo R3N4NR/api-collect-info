@@ -6,7 +6,7 @@ from app.database.database import connect_to_postgresql
 
 router = APIRouter()
 
-@router.post("/create-computer", summary="Encriptar e gravar dados de monitoramento", response_model=CreateComputador)
+@router.post("/create-computer", summary="Encriptar e gravar dados do computador", response_model=CreateComputador)
 def create_computador(computador: CreateComputador):
     try:
         dados_dict = computador.dict()

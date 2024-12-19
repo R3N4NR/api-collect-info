@@ -18,4 +18,10 @@ class ListDisks(BaseModel):
     disk_percent: float
     data_coleta: datetime
     
+class UpdateDiscos(BaseModel):
+    unidade:str
+    disco_total:float
+    disco_livre:float
+    disk_percent:float
+    
     

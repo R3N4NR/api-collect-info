@@ -25,4 +25,15 @@ class ListMonitoramento(BaseModel):
     memoria_livre: float
     ram_percent: float
     data_coleta: datetime
+
+class UpdateMonitoramento(BaseModel):
+    hostname: str
+    ip_local: str
+    cpu_info: str
+    cpu_percent: float
+    memoria_total: float
+    memoria_livre: float
+    ram_percent: float
+    
+    
     

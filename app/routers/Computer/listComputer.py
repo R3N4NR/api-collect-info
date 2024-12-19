@@ -6,7 +6,7 @@ from app.database.database import connect_to_postgresql
 
 router = APIRouter()
 
-@router.get("/list-computer", summary="Desencriptar e ler dados de monitoramento", response_model=ListComputador)
+@router.get("/list-computer", summary="Desencriptar e ler dados de computador", response_model=ListComputador)
 def list_computador(id: uuid.UUID):
     try:
         # Conectar ao banco de dados
